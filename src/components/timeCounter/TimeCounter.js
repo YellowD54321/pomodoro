@@ -1,44 +1,85 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
-import { ClockStatus } from "../features/clock/clockSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { ClockStatus, clcokRecordAdded } from "../features/clock/clockSlice";
 
-const TimeCounter = () => {
-  const [countValue, setCountValue] = useState(0);
+const TimeCounter = ({ initialTime, counting, recordTime }) => {
+  const [countValue, setCountValue] = useState(initialTime);
+  const clockStatus = useSelector((state) => state.clock.status);
   const timerRef = useRef(null);
-  const stateStatus = useSelector((state) => state.clock.status);
-
-  //   useEffect(() => {
-  //     timerRef.current = setInterval(() => {
-  //       setCountValue((preValue) => preValue + 1);
-  //     }, 1000);
-  //     return () => {
-  //       clearInterval(timerRef.current);
-  //     };
-  //   }, []);
 
   useEffect(() => {
-    console.log(stateStatus);
-    if (stateStatus === ClockStatus.Idle) {
-      console.log("STOP COUNTING");
+    if (clockStatus === ClockStatus.Idle) {
+      console.log("123");
+      recordTime(countValue);
+      setCountValue(initialTime);
+    }
+  }, [ClockStatus]);
+
+  useEffect(() => {
+    if (!counting) {
       clearInterval(timerRef.current);
     } else {
       timerRef.current = setInterval(() => {
-        setCountValue((preValue) => preValue + 1);
+        setCountValue((preValue) => preValue - 1);
       }, 1000);
     }
 
     return () => {
       clearInterval(timerRef.current);
     };
-  }, [stateStatus]);
+  }, [counting]);
 
   return <div>{countValue}</div>;
 };
 
 export const WorkTimeCounter = () => {
+  const clockStatus = useSelector((state) => state.clock.status);
+  const initialTime = useSelector((state) => state.clock.initialWorkTime);
+  const record = useSelector((state) => state.clock.record);
+  const counting = clockStatus === ClockStatus.Work;
+  const dispatch = useDispatch();
+
+  const recordTime = (timeValue) => {
+    dispatch(
+      clcokRecordAdded({
+        ...record,
+        workTime: timeValue,
+      })
+    );
+  };
   return (
     <div className="timeCounter-workTimeCounter">
-      <TimeCounter />
+      <TimeCounter
+        initialTime={initialTime}
+        counting={counting}
+        recordTime={recordTime}
+      />
+    </div>
+  );
+};
+
+export const RestTimeCounter = () => {
+  const clockStatus = useSelector((state) => state.clock.status);
+  const initialTime = useSelector((state) => state.clock.initialRestTime);
+  const record = useSelector((state) => state.clock.record);
+  const counting = clockStatus === ClockStatus.Rest;
+  const dispatch = useDispatch();
+
+  const recordTime = (timeValue) => {
+    dispatch(
+      clcokRecordAdded({
+        ...record,
+        restTime: timeValue,
+      })
+    );
+  };
+  return (
+    <div className="timeCounter-restTimeCounter">
+      <TimeCounter
+        initialTime={initialTime}
+        counting={counting}
+        recordTime={recordTime}
+      />
     </div>
   );
 };

@@ -9,21 +9,74 @@ export const ClockStatus = {
 
 const initialState = {
   status: "idle",
+  initialWorkTime: 25,
+  initialRestTime: 5,
+  record: {
+    workTime: 0,
+    restTime: 0,
+    workContent: "",
+  },
 };
 
 const clcokSlice = createSlice({
   name: "clock",
   initialState,
   reducers: {
-    clockStateSetToIdle(state, action) {
+    clockStateSetToIdle(state) {
       state.status = ClockStatus.Idle;
     },
-    clockStateSetToWork(state, action) {
+    clockStateSetToWork(state) {
       state.status = ClockStatus.Work;
+    },
+    clockStateSetToNext(state) {
+      switch (state.status) {
+        case ClockStatus.Idle:
+          state.status = ClockStatus.Work;
+          break;
+        case ClockStatus.Work:
+          state.status = ClockStatus.Rest;
+          break;
+        case ClockStatus.Rest:
+          state.status = ClockStatus.Idle;
+          break;
+        default:
+          state.status = ClockStatus.Idle;
+      }
+    },
+    clcokSetInitialWorkTime(state, action) {
+      state.initialWorkTime = +action.payload;
+    },
+    clcokSetInitialRestTime(state, action) {
+      state.initialRestTime = +action.payload;
+    },
+    clcokRecordAdded(state, action) {
+      // reducer(state, action) {
+      const { workTime, restTime, workContent } = action.payload;
+      console.log("workTime", workTime);
+      console.log("restTime", restTime);
+      console.log("workContent", workContent);
+      state.record = {
+        workTime,
+        restTime,
+        workContent,
+      };
+      // },
+      // prepare({ workTime, restTime, workContent }) {
+      //   return {
+      //     payload: { workTime, restTime, workContent },
+      //   };
+      // },
     },
   },
 });
 
-export const { clockStateSetToIdle, clockStateSetToWork } = clcokSlice.actions;
+export const {
+  clockStateSetToIdle,
+  clockStateSetToWork,
+  clockStateSetToNext,
+  clcokSetInitialWorkTime,
+  clcokSetInitialRestTime,
+  clcokRecordAdded,
+} = clcokSlice.actions;
 
 export default clcokSlice.reducer;

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   clockStateSetToIdle,
   clockStateSetToWork,
+  clockStateSetToNext,
   ClockStatus,
 } from "../features/clock/clockSlice";
 
@@ -12,11 +13,7 @@ const Button = () => {
 
   const onButtonClick = () => {
     console.log("Button is clicked.");
-    if (clockStatus === ClockStatus.Idle) {
-      dispatch(clockStateSetToWork());
-    } else {
-      dispatch(clockStateSetToIdle());
-    }
+    dispatch(clockStateSetToNext());
   };
 
   return (
