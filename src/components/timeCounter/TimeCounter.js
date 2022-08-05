@@ -9,11 +9,10 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
 
   useEffect(() => {
     if (clockStatus === ClockStatus.Idle) {
-      console.log("123");
       recordTime(countValue);
       setCountValue(initialTime);
     }
-  }, [ClockStatus]);
+  }, [clockStatus, initialTime]);
 
   useEffect(() => {
     if (!counting) {
@@ -35,18 +34,17 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
 export const WorkTimeCounter = () => {
   const clockStatus = useSelector((state) => state.clock.status);
   const initialTime = useSelector((state) => state.clock.initialWorkTime);
-  const record = useSelector((state) => state.clock.record);
   const counting = clockStatus === ClockStatus.Work;
   const dispatch = useDispatch();
 
   const recordTime = (timeValue) => {
     dispatch(
       clcokRecordAdded({
-        ...record,
         workTime: timeValue,
       })
     );
   };
+
   return (
     <div className="timeCounter-workTimeCounter">
       <TimeCounter
@@ -61,18 +59,17 @@ export const WorkTimeCounter = () => {
 export const RestTimeCounter = () => {
   const clockStatus = useSelector((state) => state.clock.status);
   const initialTime = useSelector((state) => state.clock.initialRestTime);
-  const record = useSelector((state) => state.clock.record);
   const counting = clockStatus === ClockStatus.Rest;
   const dispatch = useDispatch();
 
   const recordTime = (timeValue) => {
     dispatch(
       clcokRecordAdded({
-        ...record,
         restTime: timeValue,
       })
     );
   };
+
   return (
     <div className="timeCounter-restTimeCounter">
       <TimeCounter

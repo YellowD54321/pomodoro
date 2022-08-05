@@ -52,20 +52,11 @@ const clcokSlice = createSlice({
     clcokRecordAdded(state, action) {
       // reducer(state, action) {
       const { workTime, restTime, workContent } = action.payload;
-      console.log("workTime", workTime);
-      console.log("restTime", restTime);
-      console.log("workContent", workContent);
       state.record = {
-        workTime,
-        restTime,
-        workContent,
+        workTime: workTime ?? state.record.workTime,
+        restTime: restTime ?? state.record.restTime,
+        workContent: workContent ?? state.record.workContent,
       };
-      // },
-      // prepare({ workTime, restTime, workContent }) {
-      //   return {
-      //     payload: { workTime, restTime, workContent },
-      //   };
-      // },
     },
   },
 });

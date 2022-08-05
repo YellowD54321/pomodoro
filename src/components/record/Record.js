@@ -6,8 +6,8 @@ const Record = () => {
   console.log(recordContent);
   return (
     <div>
-      <p>Work Time: {recordContent.workTIme}</p>
-      <p>Rest Time: {recordContent.restTIme}</p>
+      <p>Work Time: {recordContent.workTime}</p>
+      <p>Rest Time: {recordContent.restTime}</p>
     </div>
   );
 };
