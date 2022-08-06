@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { ClockStatus, clcokRecordAdded } from "../features/clock/clockSlice";
+import {
+  ClockStatus,
+  clcokLastRecordEdited,
+} from "../features/clock/clockSlice";
 
 const TimeCounter = ({ initialTime, counting, recordTime }) => {
   const [countValue, setCountValue] = useState(initialTime);
@@ -9,7 +12,6 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
 
   useEffect(() => {
     if (clockStatus === ClockStatus.Idle) {
-      recordTime(countValue);
       setCountValue(initialTime);
     }
   }, [clockStatus, initialTime]);
@@ -19,7 +21,11 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
       clearInterval(timerRef.current);
     } else {
       timerRef.current = setInterval(() => {
-        setCountValue((preValue) => preValue - 1);
+        setCountValue((preValue) => {
+          const nextValue = preValue - 1;
+          recordTime(nextValue);
+          return nextValue;
+        });
       }, 1000);
     }
 
@@ -39,7 +45,7 @@ export const WorkTimeCounter = () => {
 
   const recordTime = (timeValue) => {
     dispatch(
-      clcokRecordAdded({
+      clcokLastRecordEdited({
         workTime: timeValue,
       })
     );
@@ -64,7 +70,7 @@ export const RestTimeCounter = () => {
 
   const recordTime = (timeValue) => {
     dispatch(
-      clcokRecordAdded({
+      clcokLastRecordEdited({
         restTime: timeValue,
       })
     );

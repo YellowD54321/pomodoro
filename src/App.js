@@ -7,6 +7,8 @@ import {
 import Button from "./components/button/Button";
 import { RestDropList, WorkDropList } from "./components/dropList/DropList";
 import Record from "./components/record/Record";
+import WorkContent from "./components/workContent/WorkContent";
+import LoginPage from "./components/loginPage/LoginPage";
 
 function App() {
   return (
@@ -15,7 +17,9 @@ function App() {
       <RestTimeCounter />
       <WorkDropList />
       <RestDropList />
+      <WorkContent />
       <Button />
+      <LoginPage />
       <Record />
     </div>
   );

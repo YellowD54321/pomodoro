@@ -4,6 +4,8 @@ import {
   clockStateSetToIdle,
   clockStateSetToWork,
   clockStateSetToNext,
+  clockFinished,
+  clcokLastRecordInitial,
   ClockStatus,
 } from "../features/clock/clockSlice";
 
@@ -11,8 +13,21 @@ const Button = () => {
   const dispatch = useDispatch();
   const clockStatus = useSelector((state) => state.clock.status);
 
+  const initialLastRecord = () => {
+    if (clockStatus === ClockStatus.Idle) {
+      dispatch(clcokLastRecordInitial());
+    }
+  };
+
+  const handleClockFinished = () => {
+    if (clockStatus === ClockStatus.Rest) {
+      dispatch(clockFinished());
+    }
+  };
+
   const onButtonClick = () => {
-    console.log("Button is clicked.");
+    initialLastRecord();
+    handleClockFinished();
     dispatch(clockStateSetToNext());
   };
 

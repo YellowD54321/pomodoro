@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 export const ClockStatus = {
   Idle: "idle",
@@ -11,11 +11,13 @@ const initialState = {
   status: "idle",
   initialWorkTime: 25,
   initialRestTime: 5,
-  record: {
+  lastRecord: {
+    startTime: 0,
     workTime: 0,
     restTime: 0,
     workContent: "",
   },
+  record: [],
 };
 
 const clcokSlice = createSlice({
@@ -49,14 +51,25 @@ const clcokSlice = createSlice({
     clcokSetInitialRestTime(state, action) {
       state.initialRestTime = +action.payload;
     },
-    clcokRecordAdded(state, action) {
+    clcokLastRecordInitial(state) {
+      state.lastRecord = {
+        ...initialState.lastRecord,
+        id: nanoid(),
+        startTime: new Date().toISOString(),
+      };
+    },
+    clcokLastRecordEdited(state, action) {
       // reducer(state, action) {
       const { workTime, restTime, workContent } = action.payload;
-      state.record = {
-        workTime: workTime ?? state.record.workTime,
-        restTime: restTime ?? state.record.restTime,
-        workContent: workContent ?? state.record.workContent,
+      state.lastRecord = {
+        ...state.lastRecord,
+        workTime: workTime ?? state.lastRecord.workTime,
+        restTime: restTime ?? state.lastRecord.restTime,
+        workContent: workContent ?? state.lastRecord.workContent,
       };
+    },
+    clockFinished(state) {
+      state.record.push(state.lastRecord);
     },
   },
 });
@@ -67,7 +80,9 @@ export const {
   clockStateSetToNext,
   clcokSetInitialWorkTime,
   clcokSetInitialRestTime,
-  clcokRecordAdded,
+  clcokLastRecordEdited,
+  clcokLastRecordInitial,
+  clockFinished,
 } = clcokSlice.actions;
 
 export default clcokSlice.reducer;
