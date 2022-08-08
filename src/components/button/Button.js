@@ -5,7 +5,7 @@ import {
   clockStateSetToWork,
   clockStateSetToNext,
   clockFinished,
-  clcokLastRecordInitial,
+  clcokLastRecordAdded,
   ClockStatus,
 } from "../features/clock/clockSlice";
 
@@ -15,7 +15,7 @@ const Button = () => {
 
   const initialLastRecord = () => {
     if (clockStatus === ClockStatus.Idle) {
-      dispatch(clcokLastRecordInitial());
+      dispatch(clcokLastRecordAdded());
     }
   };
 

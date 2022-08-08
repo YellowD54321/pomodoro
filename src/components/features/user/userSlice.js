@@ -2,7 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   authenticationType: "",
-  email: "",
+  user: {
+    email: "",
+    uid: "",
+  },
 };
 
 const userSlice = createSlice({
@@ -12,13 +15,17 @@ const userSlice = createSlice({
     authenticationTypeSetToGoogle(state) {
       state.authenticationType = "GOOGLE";
     },
-    accountSetEmail(state, action) {
-      state.email = action.payload;
+    accountSetUserInfo(state, action) {
+      const { email, uid } = action.payload;
+      state.user = {
+        email,
+        uid,
+      };
     },
   },
 });
 
-export const { authenticationTypeSetToGoogle, accountSetEmail } =
+export const { authenticationTypeSetToGoogle, accountSetUserInfo } =
   userSlice.actions;
 
 export default userSlice.reducer;

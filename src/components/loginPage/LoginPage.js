@@ -1,8 +1,10 @@
 import React from "react";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { doc, getDoc, collection, setDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 import { useDispatch } from "react-redux";
 import {
-  accountSetEmail,
+  accountSetUserInfo,
   authenticationType,
   authenticationTypeSetToGoogle,
 } from "../features/user/userSlice";
@@ -12,6 +14,18 @@ const LoginPage = () => {
   const auth = getAuth();
   const dispatch = useDispatch();
 
+  const initialUser = async (user) => {
+    try {
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(userRef, {
+        email: user.email,
+        pomodoroRecord: [],
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const onSignInGoogleClick = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
@@ -20,12 +34,15 @@ const LoginPage = () => {
         const token = credential.accessToken;
         // The signed-in user info.
         const user = result.user;
-
-        console.log(token);
-        console.log(user);
         if (user) {
           dispatch(authenticationTypeSetToGoogle());
-          dispatch(accountSetEmail(user.email));
+          dispatch(
+            accountSetUserInfo({
+              email: user.email,
+              uid: user.uid,
+            })
+          );
+          initialUser(user);
         }
       })
       .catch((error) => {
