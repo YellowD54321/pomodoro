@@ -1,4 +1,7 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
+import { db } from "../../../firebase";
+import { doc, getDoc, collection, setDoc } from "firebase/firestore";
+import { selectUserUid } from "../user/userSlice";
 
 export const ClockStatus = {
   Idle: "idle",
@@ -19,6 +22,12 @@ const initialState = {
   },
   record: [],
 };
+
+export const fetchRecords = createAsyncThunk("clock/fetchRecords", async () => {
+  const userRef = doc(db, "users", selectUserUid);
+  console.log(userRef);
+  // const response = await
+});
 
 const clcokSlice = createSlice({
   name: "clock",
