@@ -1,4 +1,14 @@
-import { createSlice, nanoid, current } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
+import { db } from "../../../firebase";
+import {
+  doc,
+  getDoc,
+  collection,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
+import { selectUserUid } from "../user/userSlice";
 
 export const ClockStatus = {
   Idle: "idle",
@@ -17,16 +27,35 @@ const initialState = {
     restTime: 0,
     workContent: "",
   },
-  records: [
-    {
-      id: -1,
-      startTime: 0,
-      workTime: 0,
-      restTime: 0,
-      workContent: "test",
-    },
-  ],
+  record: [],
 };
+
+export const fetchRecords = createAsyncThunk(
+  "clock/fetchRecords",
+  async (uid) => {
+    const userRef = doc(db, "users", uid);
+    const response = await getDoc(userRef);
+    const data = response.data();
+    const recordArray = data.pomodoroRecord;
+    return recordArray;
+  }
+);
+
+export const addNewRecord = createAsyncThunk(
+  "clock/addNewRecord",
+  async ({ uid, lastRecord }) => {
+    try {
+      console.log("uid", uid);
+      console.log("lastRecord", lastRecord);
+      const userRef = doc(db, "users", uid);
+      await updateDoc(userRef, {
+        pomodoroRecord: arrayUnion(lastRecord),
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+);
 
 const clcokSlice = createSlice({
   name: "clock",
@@ -59,35 +88,39 @@ const clcokSlice = createSlice({
     clcokSetInitialRestTime(state, action) {
       state.initialRestTime = +action.payload;
     },
-    clcokLastRecordAdded(state) {
-      state.records.push({
+    clcokLastRecordInitial(state) {
+      state.lastRecord = {
+        ...initialState.lastRecord,
         id: nanoid(),
         startTime: new Date().toISOString(),
-        workTime: 0,
-        restTime: 0,
-        workContent: "",
-      });
-    },
-    clcokLastRecordEdited(state, action) {
-      const { workTime, restTime, workContent } = action.payload;
-      const index = state.records.length - 1;
-      state.records[index] = {
-        ...state.records[index],
-        workTime: workTime ?? state.records[index].workTime,
-        restTime: restTime ?? state.records[index].restTime,
-        workContent: workContent ?? state.records[index].workContent,
       };
     },
-    clockFinished(state, action) {
-      // state.record.push(state.lastRecord);
-      // const { workTime, restTime, workContent } = action.payload;
-      // state.record[state.record.length - 1] = {
-      //   ...state.record,
-      //   workTime: workTime ?? state.lastRecord.workTime,
-      //   restTime: restTime ?? state.lastRecord.restTime,
-      //   workContent: workContent ?? state.lastRecord.workContent,
-      // };
+    clcokLastRecordEdited(state, action) {
+      // reducer(state, action) {
+      const { workTime, restTime, workContent } = action.payload;
+      state.lastRecord = {
+        ...state.lastRecord,
+        workTime: workTime ?? state.lastRecord.workTime,
+        restTime: restTime ?? state.lastRecord.restTime,
+        workContent: workContent ?? state.lastRecord.workContent,
+      };
     },
+    clockFinished(state) {
+      state.record.push(state.lastRecord);
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchRecords.pending, (state, action) => {
+        console.log("fetchRecords is running.");
+      })
+      .addCase(fetchRecords.fulfilled, (state, action) => {
+        console.log("fetchRecords is fulfilled.");
+        console.log("action", action);
+      })
+      .addCase(fetchRecords.rejected, (state, action) => {
+        console.log("action", action);
+      });
   },
 });
 
@@ -98,7 +131,7 @@ export const {
   clcokSetInitialWorkTime,
   clcokSetInitialRestTime,
   clcokLastRecordEdited,
-  clcokLastRecordAdded,
+  clcokLastRecordInitial,
   clockFinished,
 } = clcokSlice.actions;
 

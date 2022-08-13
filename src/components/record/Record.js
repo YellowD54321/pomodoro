@@ -2,10 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const Record = () => {
-  const records = useSelector((state) =>
-    state.clock.records.filter((record) => record.id !== -1)
-  );
-  console.log(records);
+  const records = useSelector((state) => state.clock.record);
   let recordContent = null;
 
   if (records.length === 0) {

@@ -35,6 +35,10 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
     };
   }, [counting]);
 
+  useEffect(() => {
+    if (counting) recordTime(countValue);
+  }, [countValue, counting, recordTime]);
+
   return <div>{countValue}</div>;
 };
 
