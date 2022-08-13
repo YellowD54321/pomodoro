@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 
 const Record = () => {
   const records = useSelector((state) => state.clock.record);
-  console.log(records);
   let recordContent = null;
 
   if (records.length === 0) {

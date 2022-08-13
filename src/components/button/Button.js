@@ -7,11 +7,16 @@ import {
   clockFinished,
   clcokLastRecordInitial,
   ClockStatus,
+  // fetchRecords,
+  addNewRecord,
 } from "../features/clock/clockSlice";
+// import { selectUserUid } from "../features/user/userSlice";
 
 const Button = () => {
   const dispatch = useDispatch();
   const clockStatus = useSelector((state) => state.clock.status);
+  const uid = useSelector((state) => state.user.uid);
+  const lastRecord = useSelector((state) => state.clock.lastRecord);
 
   const initialLastRecord = () => {
     if (clockStatus === ClockStatus.Idle) {
@@ -21,14 +26,22 @@ const Button = () => {
 
   const handleClockFinished = () => {
     if (clockStatus === ClockStatus.Rest) {
-      dispatch(clockFinished());
+      console.log("lastRecord", lastRecord);
+      dispatch(addNewRecord({ uid, lastRecord }));
     }
+  };
+
+  const handleClockStateSetToNext = () => {
+    dispatch(clockStateSetToNext());
   };
 
   const onButtonClick = () => {
     initialLastRecord();
     handleClockFinished();
-    dispatch(clockStateSetToNext());
+
+    // dispatch(fetchRecords(uid));
+
+    handleClockStateSetToNext();
   };
 
   return (

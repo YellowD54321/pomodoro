@@ -1,6 +1,13 @@
 import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
 import { db } from "../../../firebase";
-import { doc, getDoc, collection, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
 import { selectUserUid } from "../user/userSlice";
 
 export const ClockStatus = {
@@ -23,11 +30,32 @@ const initialState = {
   record: [],
 };
 
-export const fetchRecords = createAsyncThunk("clock/fetchRecords", async () => {
-  const userRef = doc(db, "users", selectUserUid);
-  console.log(userRef);
-  // const response = await
-});
+export const fetchRecords = createAsyncThunk(
+  "clock/fetchRecords",
+  async (uid) => {
+    const userRef = doc(db, "users", uid);
+    const response = await getDoc(userRef);
+    const data = response.data();
+    const recordArray = data.pomodoroRecord;
+    return recordArray;
+  }
+);
+
+export const addNewRecord = createAsyncThunk(
+  "clock/addNewRecord",
+  async ({ uid, lastRecord }) => {
+    try {
+      console.log("uid", uid);
+      console.log("lastRecord", lastRecord);
+      const userRef = doc(db, "users", uid);
+      await updateDoc(userRef, {
+        pomodoroRecord: arrayUnion(lastRecord),
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+);
 
 const clcokSlice = createSlice({
   name: "clock",
@@ -80,6 +108,19 @@ const clcokSlice = createSlice({
     clockFinished(state) {
       state.record.push(state.lastRecord);
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchRecords.pending, (state, action) => {
+        console.log("fetchRecords is running.");
+      })
+      .addCase(fetchRecords.fulfilled, (state, action) => {
+        console.log("fetchRecords is fulfilled.");
+        console.log("action", action);
+      })
+      .addCase(fetchRecords.rejected, (state, action) => {
+        console.log("action", action);
+      });
   },
 });
 

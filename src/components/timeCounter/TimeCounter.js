@@ -23,7 +23,6 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
       timerRef.current = setInterval(() => {
         setCountValue((preValue) => {
           const nextValue = preValue - 1;
-          recordTime(nextValue);
           return nextValue;
         });
       }, 1000);
@@ -33,6 +32,10 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
       clearInterval(timerRef.current);
     };
   }, [counting]);
+
+  useEffect(() => {
+    if (counting) recordTime(countValue);
+  }, [countValue, counting, recordTime]);
 
   return <div>{countValue}</div>;
 };

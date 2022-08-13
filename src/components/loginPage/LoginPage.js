@@ -1,26 +1,32 @@
 import React from "react";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   accountSetEmail,
   accountSetUid,
   authenticationType,
-  authenticationTypeSetToGoogle,
+  accountSetAuthenticationType,
+  AuthType,
 } from "../features/user/userSlice";
 import { doc, getDoc, collection, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
+import SignOutButton from "./SignOutButton";
 
 const LoginPage = () => {
   const provider = new GoogleAuthProvider();
   const auth = getAuth();
   const dispatch = useDispatch();
+  const isUserLogin = useSelector((state) => state.user.uid);
 
   const initialUser = async (user) => {
     try {
       const userRef = doc(db, "users", user.uid);
+      const docRef = await getDoc(userRef);
+      const userData = docRef.data();
+      if (userData?.pomodoroRecord) return;
       await setDoc(userRef, {
         email: user.email,
-        pomodoroRecord: [],
+        pomodoroRecord: [{ startTime: 0 }],
       });
     } catch (e) {
       console.log(e);
@@ -35,13 +41,11 @@ const LoginPage = () => {
         const token = credential.accessToken;
         // The signed-in user info.
         const user = result.user;
-
-        console.log(token);
-        console.log(user);
         if (user) {
-          dispatch(authenticationTypeSetToGoogle());
+          dispatch(accountSetAuthenticationType(AuthType.Google));
           dispatch(accountSetEmail(user.email));
           dispatch(accountSetUid(user.uid));
+          initialUser(user);
         }
       })
       .catch((error) => {
@@ -59,15 +63,18 @@ const LoginPage = () => {
         console.log(credential);
       });
   };
+
   return (
-    <div>
+    <div className="loginPage-main">
       <button
         type="button"
         className="loginPage-google-button"
         onClick={onSignInGoogleClick}
+        style={{ display: !isUserLogin ? "block" : "none" }}
       >
         Sign in with Google
       </button>
+      <SignOutButton />
     </div>
   );
 };
