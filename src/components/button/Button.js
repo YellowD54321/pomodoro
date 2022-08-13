@@ -5,7 +5,7 @@ import {
   clockStateSetToWork,
   clockStateSetToNext,
   clockFinished,
-  clcokLastRecordInitial,
+  clcokLastRecordAdded,
   ClockStatus,
   // fetchRecords,
   addNewRecord,
@@ -20,7 +20,7 @@ const Button = () => {
 
   const initialLastRecord = () => {
     if (clockStatus === ClockStatus.Idle) {
-      dispatch(clcokLastRecordInitial());
+      dispatch(clcokLastRecordAdded());
     }
   };
 

@@ -11,7 +11,9 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
   const timerRef = useRef(null);
 
   useEffect(() => {
+    if (!timerRef.current) return;
     if (clockStatus === ClockStatus.Idle) {
+      recordTime(countValue);
       setCountValue(initialTime);
     }
   }, [clockStatus, initialTime]);

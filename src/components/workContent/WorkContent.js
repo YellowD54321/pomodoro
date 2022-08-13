@@ -6,16 +6,17 @@ import {
 } from "../features/clock/clockSlice";
 
 const WorkContent = () => {
-  const textRef = useRef();
   const dispatch = useDispatch();
-  const isReadOnly = useSelector(
-    (state) => state.clock.status !== ClockStatus.Idle
-  );
+  const clockStatus = useSelector((state) => state.clock.status);
+  const isReadOnly = clockStatus !== ClockStatus.Idle;
+  const textRef = useRef(null);
 
   useEffect(() => {
-    const text = textRef.current?.value;
-    dispatch(clcokLastRecordEdited({ workContent: text }));
-  }, [isReadOnly]);
+    if (clockStatus === ClockStatus.Idle) {
+      const text = textRef.current?.value;
+      dispatch(clcokLastRecordEdited({ workContent: text }));
+    }
+  }, [clockStatus]);
 
   return (
     <div>
