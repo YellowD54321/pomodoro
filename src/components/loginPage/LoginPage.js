@@ -11,6 +11,7 @@ import {
 import { doc, getDoc, collection, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import SignOutButton from "./SignOutButton";
+import { fetchRecords } from "../features/clock/clockSlice";
 
 const LoginPage = () => {
   const provider = new GoogleAuthProvider();
@@ -45,6 +46,7 @@ const LoginPage = () => {
           dispatch(accountSetAuthenticationType(AuthType.Google));
           dispatch(accountSetEmail(user.email));
           dispatch(accountSetUid(user.uid));
+          dispatch(fetchRecords(user.uid));
           initialUser(user);
         }
       })

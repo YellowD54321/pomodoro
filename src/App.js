@@ -17,6 +17,8 @@ import {
   accountSetUid,
   AuthType,
 } from "./components/features/user/userSlice";
+import AnalysisPage from "./components/analysisPage/AnalysisPage";
+import { fetchRecords } from "./components/features/clock/clockSlice";
 
 function App() {
   const auth = getAuth();
@@ -28,6 +30,7 @@ function App() {
         dispatch(accountSetAuthenticationType(AuthType.Google));
         dispatch(accountSetEmail(user.email));
         dispatch(accountSetUid(user.uid));
+        dispatch(fetchRecords(user.uid));
       }
     });
   }, [auth, dispatch]);
@@ -42,6 +45,7 @@ function App() {
       <Button />
       <LoginPage />
       <Record />
+      <AnalysisPage />
     </div>
   );
 }

@@ -1,16 +1,12 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  clockStateSetToIdle,
-  clockStateSetToWork,
   clockStateSetToNext,
-  clockFinished,
-  clcokLastRecordAdded,
+  clcokLastRecordEdited,
+  clcokLastRecordInitial,
   ClockStatus,
-  // fetchRecords,
   addNewRecord,
 } from "../features/clock/clockSlice";
-// import { selectUserUid } from "../features/user/userSlice";
 
 const Button = () => {
   const dispatch = useDispatch();
@@ -20,13 +16,12 @@ const Button = () => {
 
   const initialLastRecord = () => {
     if (clockStatus === ClockStatus.Idle) {
-      dispatch(clcokLastRecordAdded());
+      dispatch(clcokLastRecordInitial());
     }
   };
 
   const handleClockFinished = () => {
     if (clockStatus === ClockStatus.Rest) {
-      console.log("lastRecord", lastRecord);
       dispatch(addNewRecord({ uid, lastRecord }));
     }
   };
@@ -38,16 +33,28 @@ const Button = () => {
   const onButtonClick = () => {
     initialLastRecord();
     handleClockFinished();
-
-    // dispatch(fetchRecords(uid));
-
     handleClockStateSetToNext();
   };
+
+  const setButtonText = () => {
+    switch (clockStatus) {
+      case ClockStatus.Idle:
+        return "WORK";
+      case ClockStatus.Work:
+        return "REST";
+      case ClockStatus.Rest:
+        return "STOP";
+      default:
+        return "WORK";
+    }
+  };
+
+  const buttonText = setButtonText();
 
   return (
     <div className="button-main">
       <button type="button" className="button" onClick={onButtonClick}>
-        START
+        {buttonText}
       </button>
     </div>
   );

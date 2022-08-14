@@ -5,6 +5,8 @@ const Record = () => {
   const records = useSelector((state) => state.clock.record);
   let recordContent = null;
 
+  if (!records) return;
+
   if (records.length === 0) {
     recordContent = (
       <div className="record-recordContent">

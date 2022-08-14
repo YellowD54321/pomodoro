@@ -12,7 +12,7 @@ const WorkContent = () => {
   const textRef = useRef(null);
 
   useEffect(() => {
-    if (clockStatus === ClockStatus.Idle) {
+    if (clockStatus === ClockStatus.Work) {
       const text = textRef.current?.value;
       dispatch(clcokLastRecordEdited({ workContent: text }));
     }

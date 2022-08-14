@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+  nanoid,
+} from "@reduxjs/toolkit";
 import { db } from "../../../firebase";
 import {
   doc,
@@ -17,7 +22,10 @@ export const ClockStatus = {
   Stop: "stop",
 };
 
-const initialState = {
+const clockAdapter = createEntityAdapter();
+
+const initialState = clockAdapter.getInitialState({
+  fetchStatus: "idle",
   status: "idle",
   initialWorkTime: 25,
   initialRestTime: 5,
@@ -27,8 +35,7 @@ const initialState = {
     restTime: 0,
     workContent: "",
   },
-  record: [],
-};
+});
 
 export const fetchRecords = createAsyncThunk(
   "clock/fetchRecords",
@@ -45,12 +52,11 @@ export const addNewRecord = createAsyncThunk(
   "clock/addNewRecord",
   async ({ uid, lastRecord }) => {
     try {
-      console.log("uid", uid);
-      console.log("lastRecord", lastRecord);
       const userRef = doc(db, "users", uid);
       await updateDoc(userRef, {
         pomodoroRecord: arrayUnion(lastRecord),
       });
+      return lastRecord;
     } catch (e) {
       console.log(e);
     }
@@ -96,7 +102,6 @@ const clcokSlice = createSlice({
       };
     },
     clcokLastRecordEdited(state, action) {
-      // reducer(state, action) {
       const { workTime, restTime, workContent } = action.payload;
       state.lastRecord = {
         ...state.lastRecord,
@@ -112,15 +117,22 @@ const clcokSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchRecords.pending, (state, action) => {
-        console.log("fetchRecords is running.");
+        console.log("fetchRecords is pending.");
+        state.fetchStatus = "pending";
       })
       .addCase(fetchRecords.fulfilled, (state, action) => {
         console.log("fetchRecords is fulfilled.");
-        console.log("action", action);
+        clockAdapter.setAll(state, action.payload);
+        state.fetchStatus = "idle";
       })
       .addCase(fetchRecords.rejected, (state, action) => {
         console.log("action", action);
-      });
+      })
+      .addCase(addNewRecord.pending, (state, action) => {
+        console.log("addNewRecord is pending.");
+        state.fetchStatus = "pending";
+      })
+      .addCase(addNewRecord.fulfilled, clockAdapter.addOne);
   },
 });
 
