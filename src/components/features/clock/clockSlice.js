@@ -1,6 +1,7 @@
 import {
   createAsyncThunk,
   createEntityAdapter,
+  createSelector,
   createSlice,
   nanoid,
 } from "@reduxjs/toolkit";
@@ -148,3 +149,10 @@ export const {
 } = clcokSlice.actions;
 
 export default clcokSlice.reducer;
+
+export const { selectAll: selectRecords, selectById: selectRecordsById } =
+  clockAdapter.getSelectors((state) => state.clock);
+
+export const selectRecordIds = createSelector(selectRecords, (records) =>
+  records.map((record) => record.id)
+);
