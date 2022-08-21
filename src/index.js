@@ -3,13 +3,29 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import firebase from "./firebase";
 
 import { Provider } from "react-redux";
 
 import store from "./store";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { fetchRecords } from "./components/features/clock/clockSlice";
+import {
+  accountSetAuthenticationType,
+  accountSetEmail,
+  accountSetUid,
+  AuthType,
+} from "./components/features/user/userSlice";
 
-// store.dispatch();
+const auth = getAuth();
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    store.dispatch(accountSetAuthenticationType(AuthType.Google));
+    store.dispatch(accountSetEmail(user.email));
+    store.dispatch(accountSetUid(user.uid));
+    store.dispatch(fetchRecords(user.uid));
+  }
+});
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

@@ -7,7 +7,7 @@ const store = configureStore({
   reducer: {
     clock: clockStateReducer,
     user: userReducer,
-    filter: filterReducer,
+    filters: filterReducer,
   },
 });
 

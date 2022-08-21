@@ -1,9 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { selectFilteredRecordIds } from "../features/clock/clockSlice";
 
 const Record = () => {
   const records = useSelector((state) => state.clock.record);
+  // const recordIds = useSelector(selectFilteredRecordIds());
   let recordContent = null;
+
+  // console.log("recordIds", recordIds);
 
   if (!records) return;
 
