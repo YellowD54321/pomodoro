@@ -149,41 +149,28 @@ export const {
 
 export default clcokSlice.reducer;
 
-console.log("clockAdapter", clockAdapter);
+export const { selectAll: selectRecords, selectById: selectRecordById } =
+  clockAdapter.getSelectors((state) => state.clock);
 
-export const clcokSelectors = clockAdapter.getSelectors();
+export const selectRecordIds = createSelector(selectRecords, (records) =>
+  records.map((record) => record.id)
+);
 
-console.log("clcokSelectors", clcokSelectors);
+export const selectFilteredRecords = createSelector(
+  selectRecords,
+  (state) => state.filters,
+  (records, filters) => {
+    const { timeDuration } = filters;
+    return records.filter((record) => {
+      return (
+        record.startTime >= timeDuration.startAt &&
+        record.startTime <= timeDuration.endAt
+      );
+    });
+  }
+);
 
-// export const selectRecords = clcokSelectors.selectAll((state) => {
-//   console.log("state", state);
-//   return state;
-// });
-
-// export const selectRecordById = clcokSelectors.selectById((state) => {
-//   console.log("state", state);
-//   return state.clock;
-// });
-
-// export const selectRecordIds = createSelector(selectRecords, (records) =>
-//   records.map((record) => record.id)
-// );
-
-// export const selectFilteredRecords = createSelector(
-//   selectRecords,
-//   (state) => state.filters,
-//   (records, filters) => {
-//     const { timeDuration } = filters;
-//     return records.filter((record) => {
-//       return (
-//         record.startTime >= timeDuration.startAt &&
-//         record.startTime <= timeDuration.endAt
-//       );
-//     });
-//   }
-// );
-
-// export const selectFilteredRecordIds = createSelector(
-//   selectFilteredRecords,
-//   (filteredRecords) => filteredRecords.map((record) => record.id)
-// );
+export const selectFilteredRecordIds = createSelector(
+  selectFilteredRecords,
+  (filteredRecords) => filteredRecords.map((record) => record.id)
+);

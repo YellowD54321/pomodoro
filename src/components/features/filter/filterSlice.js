@@ -4,28 +4,42 @@ import { createSlice } from "@reduxjs/toolkit";
 // 2. work content filter
 // 3. maybe abandon filter
 
-const getWeekStartAt = () => {
+export const getDayStartAt = () => {
   const today = new Date();
-  const todayIndex = today.getDay();
-  const startAtMs = today.setDate(today.getDate() - todayIndex);
-  const setHoursZero = new Date(startAtMs).setHours("00", "00", "00", "000");
-  const startAt = new Date(setHoursZero).toISOString();
+  const setHoursStart = today.setHours("00", "00", "00", "000");
+  const startAt = new Date(setHoursStart).toISOString();
   return startAt;
 };
 
-const getWeekEndAt = () => {
+export const getDayEndAt = () => {
+  const today = new Date();
+  const setHoursEnd = today.setHours("23", "59", "59", "999");
+  const endAt = new Date(setHoursEnd).toISOString();
+  return endAt;
+};
+
+export const getWeekStartAt = () => {
+  const today = new Date();
+  const todayIndex = today.getDay();
+  const startAtMs = today.setDate(today.getDate() - todayIndex);
+  const setHoursStart = new Date(startAtMs).setHours("00", "00", "00", "000");
+  const startAt = new Date(setHoursStart).toISOString();
+  return startAt;
+};
+
+export const getWeekEndAt = () => {
   const today = new Date();
   const todayIndex = today.getDay();
   const endAtMs = today.setDate(today.getDate() + 6 - todayIndex);
-  const setHoursZero = new Date(endAtMs).setHours("23", "59", "59", "999");
-  const endAt = new Date(setHoursZero).toISOString();
+  const setHoursEnd = new Date(endAtMs).setHours("23", "59", "59", "999");
+  const endAt = new Date(setHoursEnd).toISOString();
   return endAt;
 };
 
 export const TimeFilters = {
   Day: {
     name: "day",
-    startAt: new Date().toISOString(),
+    startAt: getDayStartAt(),
     endAt: new Date().toISOString(),
   },
   Week: {
