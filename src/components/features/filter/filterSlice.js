@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 
 // 1. time filter
 // 2. work content filter
@@ -36,11 +36,19 @@ export const getWeekEndAt = () => {
   return endAt;
 };
 
+export const getMonthStartAt = () => {};
+
+export const getMonthEndAt = () => {};
+
+export const getYearStartAt = () => {};
+
+export const getYearEndAt = () => {};
+
 export const TimeFilters = {
   Day: {
     name: "day",
     startAt: getDayStartAt(),
-    endAt: new Date().toISOString(),
+    endAt: getDayEndAt(),
   },
   Week: {
     name: "week",
@@ -49,13 +57,13 @@ export const TimeFilters = {
   },
   Month: {
     name: "month",
-    startAt: getWeekStartAt(),
-    endAt: getWeekEndAt(),
+    startAt: getMonthStartAt(),
+    endAt: getMonthEndAt(),
   },
   Year: {
     name: "year",
-    startAt: getWeekStartAt(),
-    endAt: getWeekEndAt(),
+    startAt: getYearStartAt(),
+    endAt: getYearEndAt(),
   },
   LastSevenDays: {
     name: "lastSevenDays",
@@ -70,7 +78,7 @@ export const TimeFilters = {
 };
 
 const initialState = {
-  timeDuration: TimeFilters.Week,
+  timeDuration: TimeFilters.Day,
   workContent: "",
 };
 
@@ -93,3 +101,8 @@ export const { workContentFilterChanged, timeFilterChanged } =
   filterSlice.actions;
 
 export default filterSlice.reducer;
+
+export const selectTimeDurationName = createSelector(
+  (state) => state.filters,
+  (filters) => filters.timeDuration.name
+);
