@@ -14,7 +14,7 @@ const DropList = ({ labelText, children, setTime, defaultValue }) => {
 
   const onDropListSelect = (e) => {
     const initialTime = e.target.value;
-    dispatch(setTime(initialTime));
+    dispatch(setTime(initialTime * 60));
   };
 
   return (
@@ -40,10 +40,7 @@ export const WorkDropList = () => {
 
   for (let i = 5; i <= 60; i += 5) {
     options.push(
-      <option
-        key={i}
-        value={i} /* selected={initialTime === i && "selected"} */
-      >
+      <option key={i} value={i}>
         {i} min
       </option>
     );
@@ -53,7 +50,7 @@ export const WorkDropList = () => {
     <DropList
       labelText={labelText}
       setTime={clcokSetInitialWorkTime}
-      defaultValue={initialTime}
+      defaultValue={initialTime / 60}
     >
       {options}
     </DropList>
@@ -67,10 +64,7 @@ export const RestDropList = () => {
 
   for (let i = 5; i <= 30; i += 5) {
     options.push(
-      <option
-        key={i}
-        value={i} /* selected={initialTime === i && "selected"} */
-      >
+      <option key={i} value={i}>
         {i} min
       </option>
     );
@@ -80,7 +74,7 @@ export const RestDropList = () => {
     <DropList
       labelText={labelText}
       setTime={clcokSetInitialRestTime}
-      defaultValue={initialTime}
+      defaultValue={initialTime / 60}
     >
       {options}
     </DropList>

@@ -36,13 +36,63 @@ export const getWeekEndAt = () => {
   return endAt;
 };
 
-export const getMonthStartAt = () => {};
+export const getMonthStartAt = () => {
+  const today = new Date();
+  const monthIndex = today.getMonth();
+  const startAt = new Date(
+    today.getFullYear(),
+    monthIndex,
+    1,
+    "00",
+    "00",
+    "00",
+    "0000"
+  ).toISOString();
+  return startAt;
+};
 
-export const getMonthEndAt = () => {};
+export const getMonthEndAt = () => {
+  const today = new Date();
+  const monthIndex = today.getMonth();
+  const startAt = new Date(
+    today.getFullYear(),
+    monthIndex + 1,
+    0,
+    "23",
+    "59",
+    "59",
+    "999"
+  ).toISOString();
+  return startAt;
+};
 
-export const getYearStartAt = () => {};
+export const getYearStartAt = () => {
+  const today = new Date();
+  const startAt = new Date(
+    today.getFullYear(),
+    0,
+    1,
+    "00",
+    "00",
+    "00",
+    "000"
+  ).toISOString();
+  return startAt;
+};
 
-export const getYearEndAt = () => {};
+export const getYearEndAt = () => {
+  const today = new Date();
+  const startAt = new Date(
+    today.getFullYear() + 1,
+    0,
+    0,
+    "23",
+    "59",
+    "59",
+    "999"
+  ).toISOString();
+  return startAt;
+};
 
 export const TimeFilters = {
   Day: {
@@ -78,7 +128,7 @@ export const TimeFilters = {
 };
 
 const initialState = {
-  timeDuration: TimeFilters.Day,
+  timeDuration: TimeFilters.Year,
   workContent: "",
 };
 
@@ -90,9 +140,7 @@ const filterSlice = createSlice({
       state.workContent = action.payload;
     },
     timeFilterChanged(state, action) {
-      state.timeDuration = TimeFilters.find(
-        (duration) => duration.name === action.payload
-      );
+      state.timeDuration.name = action.payload;
     },
   },
 });

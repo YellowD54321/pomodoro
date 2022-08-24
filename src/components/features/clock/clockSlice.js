@@ -27,10 +27,12 @@ const clockAdapter = createEntityAdapter();
 const initialState = clockAdapter.getInitialState({
   fetchStatus: "idle",
   status: "idle",
-  initialWorkTime: 25,
-  initialRestTime: 5,
+  initialWorkTime: 25 * 60,
+  initialRestTime: 5 * 60,
   lastRecord: {
     startTime: 0,
+    initialWorkTime: 0,
+    initialRestTime: 0,
     workTime: 0,
     restTime: 0,
     workContent: "",
@@ -102,12 +104,20 @@ const clcokSlice = createSlice({
       };
     },
     clcokLastRecordEdited(state, action) {
-      const { workTime, restTime, workContent } = action.payload;
+      const {
+        workTime,
+        restTime,
+        workContent,
+        initialWorkTime,
+        initialRestTime,
+      } = action.payload;
       state.lastRecord = {
         ...state.lastRecord,
         workTime: workTime ?? state.lastRecord.workTime,
         restTime: restTime ?? state.lastRecord.restTime,
         workContent: workContent ?? state.lastRecord.workContent,
+        initialWorkTime: initialWorkTime ?? state.lastRecord.initialWorkTime,
+        initialRestTime: initialRestTime ?? state.lastRecord.initialRestTime,
       };
     },
     clockFinished(state) {
@@ -117,20 +127,15 @@ const clcokSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchRecords.pending, (state, action) => {
-        console.log("fetchRecords is pending.");
         state.fetchStatus = "pending";
       })
       .addCase(fetchRecords.fulfilled, (state, action) => {
-        console.log("fetchRecords is fulfilled.");
         clockAdapter.setAll(state, action.payload);
         state.fetchStatus = "idle";
       })
       .addCase(fetchRecords.rejected, (state, action) => {
+        state.fetchStatus = "error";
         console.log("action", action);
-      })
-      .addCase(addNewRecord.pending, (state, action) => {
-        console.log("addNewRecord is pending.");
-        state.fetchStatus = "pending";
       })
       .addCase(addNewRecord.fulfilled, clockAdapter.addOne);
   },

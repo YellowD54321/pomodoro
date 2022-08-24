@@ -12,18 +12,11 @@ export const AuthType = {
   Guest: "GUEST",
 };
 
-const userAdapter = createEntityAdapter();
-
-const initialState = userAdapter.getInitialState({
-  entities: {
-    authenticationType: "",
-    email: "",
-    uid: "",
-  },
+const initialState = {
   authenticationType: "",
   email: "",
   uid: "",
-});
+};
 
 const userSlice = createSlice({
   name: "user",
@@ -45,10 +38,3 @@ export const { accountSetAuthenticationType, accountSetEmail, accountSetUid } =
   userSlice.actions;
 
 export default userSlice.reducer;
-
-// export const { selectAll: selectUser } = userAdapter.getSelectors((state) => {
-//   console.log("state", state);
-//   return state.user;
-// });
-
-// export const selectUserUid = createSelector(selectUser, (user) => user.uid);

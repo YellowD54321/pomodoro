@@ -11,12 +11,10 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
   const timerRef = useRef(null);
 
   useEffect(() => {
-    if (!timerRef.current) return;
     if (clockStatus === ClockStatus.Idle) {
-      recordTime(countValue);
       setCountValue(initialTime);
     }
-  }, [clockStatus, initialTime]);
+  }, [clockStatus, initialTime, recordTime, countValue]);
 
   useEffect(() => {
     if (!counting) {
@@ -36,10 +34,22 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
   }, [counting]);
 
   useEffect(() => {
-    if (counting) recordTime(countValue);
-  }, [countValue, counting, recordTime]);
+    if (counting) recordTime(initialTime - countValue);
+  }, [countValue, counting, recordTime, initialTime]);
 
-  return <div>{countValue}</div>;
+  const minutesDisplay = Math.abs(Math.trunc(countValue / 60))
+    .toString()
+    .padStart(2, "0");
+  const secondsDiplay = Math.abs(countValue % 60)
+    .toString()
+    .padStart(2, "0");
+  const negativeMark = countValue < 0 ? "-" : "";
+
+  return (
+    <div>
+      {negativeMark} {minutesDisplay} : {secondsDiplay}
+    </div>
+  );
 };
 
 export const WorkTimeCounter = () => {
@@ -51,6 +61,7 @@ export const WorkTimeCounter = () => {
   const recordTime = (timeValue) => {
     dispatch(
       clcokLastRecordEdited({
+        initialWorkTime: initialTime,
         workTime: timeValue,
       })
     );
@@ -76,6 +87,7 @@ export const RestTimeCounter = () => {
   const recordTime = (timeValue) => {
     dispatch(
       clcokLastRecordEdited({
+        initialRestTime: initialTime,
         restTime: timeValue,
       })
     );

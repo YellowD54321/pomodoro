@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import BarChart from "./charts/BarChart";
 import DoughnutChart from "./charts/DoughnutChart";
 import "./analysisPage.css";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   selectFilteredRecords,
   selectFilteredRecordIds,
@@ -15,12 +15,13 @@ import {
   getYearStartAt,
   TimeFilters,
   selectTimeDurationName,
+  timeFilterChanged,
 } from "../features/filter/filterSlice";
 
 const AnalysisPage = () => {
+  const dispatch = useDispatch();
   const records = useSelector(selectFilteredRecords);
   const timeFilter = useSelector(selectTimeDurationName);
-  console.log("timeFilter", timeFilter);
   const result = {
     workTime: [],
     restTime: [],
@@ -28,19 +29,32 @@ const AnalysisPage = () => {
   };
 
   const getDayNextTime = (startTime, timeDistance) => {
-    return startTime.setHours(startTime.getHours() + timeDistance * 6);
+    return new Date(
+      startTime.setHours(startTime.getHours() + timeDistance * 6)
+    );
   };
 
   const getWeekNextTime = (startTime, timeDistance) => {
-    return startTime.setDate(startTime.getDate() + timeDistance);
+    return new Date(startTime.setDate(startTime.getDate() + timeDistance));
   };
 
   const getMonthNextTime = (startTime, timeDistance) => {
-    return startTime.setDate(startTime.getDate() + timeDistance * 7);
+    return new Date(startTime.setDate(startTime.getDate() + timeDistance * 7));
   };
 
   const getYearNextTime = (startTime, timeDistance) => {
-    return startTime.setDate(startTime.getDate() + timeDistance);
+    const isEndTime = startTime.getHours() !== 0;
+    return new Date(
+      startTime.getFullYear(),
+      isEndTime
+        ? startTime.getMonth() + 3 * timeDistance + 1
+        : startTime.getMonth() + 3 * timeDistance,
+      isEndTime ? 0 : startTime.getDate(),
+      startTime.getHours(),
+      startTime.getMinutes(),
+      startTime.getSeconds(),
+      startTime.getMilliseconds()
+    );
   };
 
   const getNexTime = (startTime, timeDistance) => {
@@ -65,9 +79,9 @@ const AnalysisPage = () => {
       case TimeFilters.Week.name:
         return 7;
       case TimeFilters.Month.name:
-        return 4;
+        return 5;
       case TimeFilters.Year.name:
-        return 12;
+        return 4;
       default:
         return 4;
     }
@@ -76,15 +90,47 @@ const AnalysisPage = () => {
   const getFirstDayStartAt = () => {
     switch (timeFilter) {
       case TimeFilters.Day.name:
-        return getDayStartAt();
+        return new Date(getDayStartAt());
       case TimeFilters.Week.name:
-        return getWeekStartAt();
+        return new Date(getWeekStartAt());
       case TimeFilters.Month.name:
-        return getMonthStartAt();
+        return new Date(getMonthStartAt());
       case TimeFilters.Year.name:
-        return getYearStartAt();
+        return new Date(getYearStartAt());
       default:
-        return getDayStartAt();
+        return new Date(getDayStartAt());
+    }
+  };
+
+  const getFirstDayEndAt = () => {
+    const firstDayStartAt = getFirstDayStartAt();
+    switch (timeFilter) {
+      case TimeFilters.Day.name:
+        return new Date(firstDayStartAt.setHours("05", "59", "59", "999"));
+      case TimeFilters.Week.name:
+        return new Date(firstDayStartAt.setHours("23", "59", "59", "999"));
+      case TimeFilters.Month.name:
+        return new Date(
+          firstDayStartAt.getFullYear(),
+          firstDayStartAt.getMonth(),
+          7,
+          "23",
+          "59",
+          "59",
+          "999"
+        );
+      case TimeFilters.Year.name:
+        return new Date(
+          firstDayStartAt.getFullYear(),
+          3,
+          0,
+          "23",
+          "59",
+          "59",
+          "999"
+        );
+      default:
+        return new Date(firstDayStartAt.setHours("05", "59", "59", "999"));
     }
   };
 
@@ -124,12 +170,11 @@ const AnalysisPage = () => {
   const sliceNumber = getSliceNumber() - 1;
 
   for (let i = 0; i <= sliceNumber; i++) {
-    const firstDayStartAt = new Date(getFirstDayStartAt());
-    const firstDayEndAt = new Date(
-      new Date(getFirstDayStartAt()).setHours("23", "59", "59", "999")
-    );
-    const startAt = new Date(getNexTime(firstDayStartAt, i)).toISOString();
-    const endAt = new Date(getNexTime(firstDayEndAt, i)).toISOString();
+    const firstDayStartAt = getFirstDayStartAt();
+    const firstDayEndAt = getFirstDayEndAt();
+    const startAt = getNexTime(firstDayStartAt, i).toISOString();
+    const endAt = getNexTime(firstDayEndAt, i).toISOString();
+
     const dayRecords = records.filter(
       (record) => record.startTime >= startAt && record.startTime <= endAt
     );
@@ -161,8 +206,48 @@ const AnalysisPage = () => {
     ],
   };
 
+  const handleButtonClick = (e) => {
+    const name = e.target.name;
+    console.log("name", name);
+    dispatch(timeFilterChanged(name));
+  };
+
   return (
     <div className="analysis-page-main">
+      <div className="analysis-page-buttons">
+        <button
+          className="analysis-page-button"
+          type="button"
+          name={TimeFilters.Year.name}
+          onClick={handleButtonClick}
+        >
+          Year
+        </button>
+        <button
+          className="analysis-page-button"
+          type="button"
+          name={TimeFilters.Month.name}
+          onClick={handleButtonClick}
+        >
+          Month
+        </button>
+        <button
+          className="analysis-page-button"
+          type="button"
+          name={TimeFilters.Week.name}
+          onClick={handleButtonClick}
+        >
+          Week
+        </button>
+        <button
+          className="analysis-page-button"
+          type="button"
+          name={TimeFilters.Day.name}
+          onClick={handleButtonClick}
+        >
+          Day
+        </button>
+      </div>
       <DoughnutChart chartData={chartData} chartOptions={chartOptions} />
     </div>
   );
