@@ -4,7 +4,7 @@ import {
   ClockStatus,
   clcokSetInitialWorkTime,
   clcokSetInitialRestTime,
-} from "../features/clock/clockSlice";
+} from "../../features/clock/clockSlice";
 
 const DropList = ({ labelText, children, setTime, defaultValue }) => {
   const dispatch = useDispatch();

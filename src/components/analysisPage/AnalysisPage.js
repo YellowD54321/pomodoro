@@ -208,28 +208,34 @@ const AnalysisPage = () => {
 
   const handleButtonClick = (e) => {
     const name = e.target.name;
-    console.log("name", name);
     dispatch(timeFilterChanged(name));
   };
 
+  const ClickedClassName = "analysis-page-button-clicked";
+
+  const handleClick = (e) => {
+    const targetButton = e.target.closest("button");
+    if (!targetButton) return;
+    const buttons = document.getElementsByClassName("analysis-page-button");
+
+    if (buttons && buttons.length > 0) {
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove(ClickedClassName);
+      }
+    }
+    targetButton.classList.add(ClickedClassName);
+  };
+
   return (
-    <div className="analysis-page-main">
-      <div className="analysis-page-buttons">
+    <div id="analysis-page-main">
+      <div className="analysis-page-buttons" onClick={handleClick}>
         <button
-          className="analysis-page-button"
+          className="analysis-page-button analysis-page-button-clicked"
           type="button"
-          name={TimeFilters.Year.name}
+          name={TimeFilters.Day.name}
           onClick={handleButtonClick}
         >
-          Year
-        </button>
-        <button
-          className="analysis-page-button"
-          type="button"
-          name={TimeFilters.Month.name}
-          onClick={handleButtonClick}
-        >
-          Month
+          Day
         </button>
         <button
           className="analysis-page-button"
@@ -242,10 +248,18 @@ const AnalysisPage = () => {
         <button
           className="analysis-page-button"
           type="button"
-          name={TimeFilters.Day.name}
+          name={TimeFilters.Month.name}
           onClick={handleButtonClick}
         >
-          Day
+          Month
+        </button>
+        <button
+          className="analysis-page-button"
+          type="button"
+          name={TimeFilters.Year.name}
+          onClick={handleButtonClick}
+        >
+          Year
         </button>
       </div>
       <DoughnutChart chartData={chartData} chartOptions={chartOptions} />

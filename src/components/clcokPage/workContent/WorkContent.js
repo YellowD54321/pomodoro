@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   clcokLastRecordEdited,
   ClockStatus,
-} from "../features/clock/clockSlice";
+} from "../../features/clock/clockSlice";
 
 const WorkContent = () => {
   const dispatch = useDispatch();

@@ -21,9 +21,15 @@ export const getDayEndAt = () => {
 export const getWeekStartAt = () => {
   const today = new Date();
   const todayIndex = today.getDay();
-  const startAtMs = today.setDate(today.getDate() - todayIndex);
-  const setHoursStart = new Date(startAtMs).setHours("00", "00", "00", "000");
-  const startAt = new Date(setHoursStart).toISOString();
+  const startAt = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() - todayIndex,
+    "00",
+    "00",
+    "00",
+    "000"
+  ).toISOString();
   return startAt;
 };
 
@@ -128,7 +134,7 @@ export const TimeFilters = {
 };
 
 const initialState = {
-  timeDuration: TimeFilters.Year,
+  timeDuration: TimeFilters.Day,
   workContent: "",
 };
 
@@ -140,7 +146,17 @@ const filterSlice = createSlice({
       state.workContent = action.payload;
     },
     timeFilterChanged(state, action) {
-      state.timeDuration.name = action.payload;
+      let time;
+      Object.values(TimeFilters).forEach((filter) => {
+        if (filter.name === action.payload) {
+          time = filter;
+        }
+      });
+      state.timeDuration = {
+        name: time.name,
+        startAt: time.startAt,
+        endAt: time.endAt,
+      };
     },
   },
 });

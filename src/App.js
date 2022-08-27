@@ -1,28 +1,25 @@
 import React from "react";
 import "./App.css";
-import {
-  RestTimeCounter,
-  WorkTimeCounter,
-} from "./components/timeCounter/TimeCounter";
-import Button from "./components/button/Button";
-import { RestDropList, WorkDropList } from "./components/dropList/DropList";
-import Record from "./components/record/Record";
-import WorkContent from "./components/workContent/WorkContent";
 import LoginPage from "./components/loginPage/LoginPage";
 import AnalysisPage from "./components/analysisPage/AnalysisPage";
+import NavBar from "./components/navBar/NavBar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
+import ClockPage from "./components/clcokPage/ClockPage";
 
 function App() {
   return (
     <div className="App">
-      <WorkTimeCounter />
-      <RestTimeCounter />
-      <WorkDropList />
-      <RestDropList />
-      <WorkContent />
-      <Button />
-      <LoginPage />
-      <Record />
-      <AnalysisPage />
+      <HashRouter>
+        <div className="app-main">
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<ClockPage />}></Route>
+            <Route path="/Analysis" element={<AnalysisPage />}></Route>
+            <Route path="/Account" element={<LoginPage />}></Route>
+          </Routes>
+        </div>
+      </HashRouter>
     </div>
   );
 }

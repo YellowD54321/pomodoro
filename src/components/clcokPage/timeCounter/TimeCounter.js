@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   ClockStatus,
   clcokLastRecordEdited,
-} from "../features/clock/clockSlice";
+} from "../../features/clock/clockSlice";
 
 const TimeCounter = ({ initialTime, counting, recordTime }) => {
   const [countValue, setCountValue] = useState(initialTime);
@@ -46,7 +46,7 @@ const TimeCounter = ({ initialTime, counting, recordTime }) => {
   const negativeMark = countValue < 0 ? "-" : "";
 
   return (
-    <div>
+    <div className="timeCounter-main">
       {negativeMark} {minutesDisplay} : {secondsDiplay}
     </div>
   );

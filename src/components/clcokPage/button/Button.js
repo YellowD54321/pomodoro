@@ -6,7 +6,7 @@ import {
   clcokLastRecordInitial,
   ClockStatus,
   addNewRecord,
-} from "../features/clock/clockSlice";
+} from "../../features/clock/clockSlice";
 
 const Button = () => {
   const dispatch = useDispatch();
@@ -52,8 +52,8 @@ const Button = () => {
   const buttonText = setButtonText();
 
   return (
-    <div className="button-main">
-      <button type="button" className="button" onClick={onButtonClick}>
+    <div className="clock-button-main">
+      <button type="button" className="clock-button" onClick={onButtonClick}>
         {buttonText}
       </button>
     </div>
