@@ -28,7 +28,7 @@ const SignOutButton = () => {
     <div>
       <button
         type="button"
-        className="loginPage-log-out-button"
+        className="login-page-log-out-button"
         onClick={onSignOutClick}
         style={{ display: isUserLogin ? "block" : "none" }}
       >

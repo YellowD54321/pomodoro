@@ -1,10 +1,4 @@
-import {
-  createSlice,
-  createEntityAdapter,
-  createSelector,
-  configureStore,
-} from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
+import { createSlice } from "@reduxjs/toolkit";
 
 export const AuthType = {
   Google: "GOOGLE",

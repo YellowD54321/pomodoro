@@ -1,14 +1,13 @@
-import React from "react";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import React, { useState, useEffect } from "react";
+import { getAuth, signInWithRedirect, GoogleAuthProvider } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import {
   accountSetEmail,
   accountSetUid,
-  authenticationType,
   accountSetAuthenticationType,
   AuthType,
 } from "../features/user/userSlice";
-import { doc, getDoc, collection, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import SignOutButton from "./SignOutButton";
 import { fetchRecords } from "../features/clock/clockSlice";
@@ -18,6 +17,10 @@ const LoginPage = () => {
   const auth = getAuth();
   const dispatch = useDispatch();
   const isUserLogin = useSelector((state) => state.user.uid);
+  const { email, authenticationType } = useSelector((state) => state.user);
+  const [googleImageSrc, setGoogleImageSrc] = useState(
+    "./images/google/btn_google_signin_light_normal_web@2x.png"
+  );
 
   const initialUser = async (user) => {
     try {
@@ -34,13 +37,9 @@ const LoginPage = () => {
     }
   };
 
-  const onSignInGoogleClick = () => {
-    signInWithPopup(auth, provider)
+  const onGoogleClick = () => {
+    signInWithRedirect(auth, provider)
       .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
         const user = result.user;
         if (user) {
           dispatch(accountSetAuthenticationType(AuthType.Google));
@@ -51,12 +50,9 @@ const LoginPage = () => {
         }
       })
       .catch((error) => {
-        // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
-        // The email of the user's account used.
         const email = error.customData.email;
-        // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
 
         console.log(errorCode);
@@ -66,16 +62,41 @@ const LoginPage = () => {
       });
   };
 
+  const onGoogleMouseDown = () => {
+    setGoogleImageSrc(
+      "./images/google/btn_google_signin_light_pressed_web@2x.png"
+    );
+  };
+
+  useEffect(() => {
+    const mouseUpEvent = () => {
+      setGoogleImageSrc(
+        "./images/google/btn_google_signin_light_normal_web@2x.png"
+      );
+    };
+    window.addEventListener("mouseup", mouseUpEvent);
+    return () => {
+      window.removeEventListener("mouseup", mouseUpEvent);
+    };
+  }, []);
+
   return (
-    <div className="loginPage-main">
-      <button
-        type="button"
-        className="loginPage-google-button"
-        onClick={onSignInGoogleClick}
+    <div className="login-page-main">
+      <img
+        src={googleImageSrc}
+        alt=""
+        className="login-page-google-button"
+        onClick={onGoogleClick}
+        onMouseDown={onGoogleMouseDown}
         style={{ display: !isUserLogin ? "block" : "none" }}
+        draggable="false"
+      />
+      <div
+        className="login-page-account-information"
+        style={{ display: isUserLogin ? "block" : "none" }}
       >
-        Sign in with Google
-      </button>
+        Account: {email} ({authenticationType})
+      </div>
       <SignOutButton />
     </div>
   );

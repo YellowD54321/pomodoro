@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { useSelector } from "react-redux/es/exports";
 import { ClockStatus } from "../features/clock/clockSlice";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ const NavBar = () => {
   const loginText = isLogin ? "Account" : "Sign In";
   const clockStatus = useSelector((state) => state.clock.status);
   const isClockRunning = clockStatus !== ClockStatus.Idle;
-  const disableClassName = isClockRunning ? "nav-bar-disable" : "";
+  const disableClassName = isClockRunning ? " nav-bar-disable" : "";
   const clockRef = useRef();
   const analysisRef = useRef();
   const accountRef = useRef();
@@ -18,37 +18,61 @@ const NavBar = () => {
   const analysisPage = analysisRef.current;
   const accountPage = accountRef.current;
 
+  let clockPageClassName = "nav-bar-clock";
+  let analysisPageClassName = "nav-bar-analysis";
+  let accountPageClassName = "nav-bar-account";
+
+  const NavBarChosenClassName = "nav-bar-chosen";
+
+  const PageName = {
+    Clock: "/",
+    Analysis: "/Analysis",
+    Account: "/Account",
+  };
+
+  const currentPageName = window.location.hash.slice(1);
+
   const clearChosenClass = () => {
     if (clockPage && analysisPage && accountPage) {
-      clockPage.classList.remove("nav-bar-chosen");
-      analysisPage.classList.remove("nav-bar-chosen");
-      accountPage.classList.remove("nav-bar-chosen");
+      clockPage.classList.remove(NavBarChosenClassName);
+      analysisPage.classList.remove(NavBarChosenClassName);
+      accountPage.classList.remove(NavBarChosenClassName);
     }
   };
 
   const addChosenClass = (target) => {
     if (target) {
-      target.classList.add("nav-bar-chosen");
+      target.classList.add(NavBarChosenClassName);
     }
   };
 
   const handleClockClick = () => {
-    clearChosenClass();
-    addChosenClass(clockPage);
     navigate("/");
   };
   const handleAnalysisClick = () => {
     if (isClockRunning) return;
-    clearChosenClass();
-    addChosenClass(analysisPage);
     navigate("/Analysis");
   };
   const handleAccountClick = () => {
     if (isClockRunning) return;
-    clearChosenClass();
-    addChosenClass(accountPage);
     navigate("/Account");
   };
+
+  clearChosenClass();
+  switch (currentPageName) {
+    case PageName.Clock:
+      addChosenClass(clockPage);
+      break;
+    case PageName.Analysis:
+      addChosenClass(analysisPage);
+      break;
+    case PageName.Account:
+      addChosenClass(accountPage);
+      break;
+    default:
+      addChosenClass(clockPage);
+      break;
+  }
 
   return (
     <div id="nav-bar-main">
@@ -57,21 +81,21 @@ const NavBar = () => {
           <li
             onClick={handleClockClick}
             ref={clockRef}
-            className="nav-bar-clock nav-bar-chosen"
+            className="nav-bar-clock"
           >
             Clock
           </li>
           <li
             onClick={handleAnalysisClick}
             ref={analysisRef}
-            className={"nav-bar-analysis " + disableClassName}
+            className={"nav-bar-analysis" + disableClassName}
           >
             Analysis
           </li>
           <li
-            className={"nav-bar-account " + disableClassName}
             onClick={handleAccountClick}
             ref={accountRef}
+            className={"nav-bar-account" + disableClassName}
           >
             {loginText}
           </li>

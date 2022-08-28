@@ -9,6 +9,7 @@ body {
     background-color: var(--backgroung-color-main);
     color: white;
     font-family: 'Archivo Black', sans-serif;
+    overflow: hidden;
 }
 
 button, input {
@@ -25,6 +26,7 @@ button, input {
 .app-main {
     background-color: var(--backgroung-color-light);
     min-width: 50vw;
+    max-width: 95vw;
     height: 97vh;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -124,6 +126,7 @@ button, input {
 }
 
 .workContent-input {
+    max-width: 80vw;
     font-size: 1.7rem;
     margin-bottom: 5vh;
     color: var(--backgroung-color-main);
@@ -157,15 +160,15 @@ button, input {
 }
 
 .analysis-page-main {
-    margin: auto;
     margin-top: 10vh;
+    margin-left: 10vw;
+    margin-right: 10vw;
 }
 
 .analysis-page-buttons {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 80%;
+    min-width: 80%;
     margin-bottom: 5vh;
 }
 
@@ -174,6 +177,7 @@ button, input {
     color: white;
     font-size: 1rem;
     padding: 15px 20px;
+    margin: 0 2vw;
     border: none;
     border-radius: 10px;
     cursor: pointer;
@@ -190,6 +194,71 @@ button, input {
     box-shadow: 0px 0px 5px 3px white;
 }
 
+.analysis-page-label {
+    color: rgb(87, 87, 87);
+}
+
 .doughnut-chart-main {
-    width: 30vw;
+    width: 80%;
+}
+
+.login-page-main {
+    width: auto;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-page-google-button {
+    width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.login-page-account-information {
+    margin-bottom: 30px;
+}
+
+.login-page-log-out-button {
+    background-color: var(--backgroung-color-main);
+    color: white;
+    font-size: 1.2rem;
+    padding: 30px 50px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+
+    .app-main {
+        width: 100%;
+    }
+
+    .clock-page-counters {
+        flex-direction: column;
+        margin-top: 5vh;
+    }
+
+    .clock-page-work-counter {
+        padding-right: 0;
+        border-right: 0px solid var(--backgroung-color-main);
+        padding-bottom: 5vh;
+        border-bottom: 3px solid var(--backgroung-color-main);
+        margin-bottom: 10px;
+    }
+
+    .analysis-page-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        min-width: 80%;
+    }
+
+    .doughnut-chart-main {
+        width: 80vw;
+    }    
 }

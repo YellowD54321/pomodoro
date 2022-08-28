@@ -227,7 +227,7 @@ const AnalysisPage = () => {
   };
 
   return (
-    <div id="analysis-page-main">
+    <div className="analysis-page-main">
       <div className="analysis-page-buttons" onClick={handleClick}>
         <button
           className="analysis-page-button analysis-page-button-clicked"
@@ -262,6 +262,7 @@ const AnalysisPage = () => {
           Year
         </button>
       </div>
+      <h3 className="analysis-page-label">Working Time(minutes)</h3>
       <DoughnutChart chartData={chartData} chartOptions={chartOptions} />
     </div>
   );
