@@ -61,15 +61,19 @@ const NavBar = () => {
   clearChosenClass();
   switch (currentPageName) {
     case PageName.Clock:
+      clockPageClassName += " " + NavBarChosenClassName;
       addChosenClass(clockPage);
       break;
     case PageName.Analysis:
+      analysisPageClassName += " " + NavBarChosenClassName;
       addChosenClass(analysisPage);
       break;
     case PageName.Account:
+      accountPageClassName += " " + NavBarChosenClassName;
       addChosenClass(accountPage);
       break;
     default:
+      clockPageClassName += " " + NavBarChosenClassName;
       addChosenClass(clockPage);
       break;
   }
@@ -81,21 +85,21 @@ const NavBar = () => {
           <li
             onClick={handleClockClick}
             ref={clockRef}
-            className="nav-bar-clock"
+            className={clockPageClassName}
           >
             Clock
           </li>
           <li
             onClick={handleAnalysisClick}
             ref={analysisRef}
-            className={"nav-bar-analysis" + disableClassName}
+            className={analysisPageClassName + disableClassName}
           >
             Analysis
           </li>
           <li
             onClick={handleAccountClick}
             ref={accountRef}
-            className={"nav-bar-account" + disableClassName}
+            className={accountPageClassName + disableClassName}
           >
             {loginText}
           </li>

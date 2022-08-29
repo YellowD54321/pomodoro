@@ -7,6 +7,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HashRouter } from "react-router-dom";
 import ClockPage from "./components/clcokPage/ClockPage";
 
+console.log("LAST UPDATE: 2022/08/30 12:14");
+
 function App() {
   return (
     <div className="App">

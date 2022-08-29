@@ -9,7 +9,6 @@ body {
     background-color: var(--backgroung-color-main);
     color: white;
     font-family: 'Archivo Black', sans-serif;
-    overflow: hidden;
 }
 
 button, input {
@@ -160,7 +159,7 @@ button, input {
 }
 
 .analysis-page-main {
-    margin-top: 10vh;
+    margin-top: 5vh;
     margin-left: 10vw;
     margin-right: 10vw;
 }
@@ -240,15 +239,15 @@ button, input {
 
     .clock-page-counters {
         flex-direction: column;
-        margin-top: 5vh;
+        margin-top: 2vh;
     }
 
     .clock-page-work-counter {
         padding-right: 0;
         border-right: 0px solid var(--backgroung-color-main);
-        padding-bottom: 5vh;
+        padding-bottom: 2vh;
         border-bottom: 3px solid var(--backgroung-color-main);
-        margin-bottom: 10px;
+        margin-bottom: 0;
     }
 
     .analysis-page-buttons {
