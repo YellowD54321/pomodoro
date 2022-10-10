@@ -11,6 +11,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import SignOutButton from "./SignOutButton";
 import { fetchRecords } from "../features/clock/clockSlice";
+import Avatar from "./avatar/Avatar";
 
 const LoginPage = () => {
   const provider = new GoogleAuthProvider();
@@ -97,6 +98,7 @@ const LoginPage = () => {
       >
         Account: {email} ({authenticationType})
       </div>
+      <Avatar />
       <SignOutButton />
     </div>
   );

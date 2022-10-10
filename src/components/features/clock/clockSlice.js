@@ -9,8 +9,6 @@ import { db } from "../../../firebase";
 import {
   doc,
   getDoc,
-  collection,
-  setDoc,
   updateDoc,
   arrayUnion,
 } from "firebase/firestore";
